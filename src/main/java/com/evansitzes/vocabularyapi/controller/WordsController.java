@@ -4,12 +4,12 @@ import com.evansitzes.vocabularyapi.model.entity.Word;
 import com.evansitzes.vocabularyapi.model.repository.WordRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+import java.util.Optional;
+
+@RestController
 public class WordsController {
 
     private final WordRepository wordRepository;
@@ -19,7 +19,7 @@ public class WordsController {
     }
 
     @GetMapping(path="/words")
-    public @ResponseBody Iterable<Word> getAllUsers(
+    public List<Word> getWords(
             @RequestParam(value="category", required = false) final String category,
             @RequestParam(value="language", required = false) final String language) {
 
@@ -28,12 +28,17 @@ public class WordsController {
                                 .language(language)
                                 .active(true)
                                 .build();
-        
+
         final ExampleMatcher matcher = ExampleMatcher
                                         .matching()
                                         .withIgnorePaths("id", "level", "knowledgeCount")
                                         .withIgnoreNullValues();
 
         return wordRepository.findAll(Example.of(wordFilter, matcher));
+    }
+
+    @GetMapping(path="/words/{id}")
+    public Optional<Word> getWord(@PathVariable(value="id") final int id) {
+        return wordRepository.findById(id);
     }
 }
