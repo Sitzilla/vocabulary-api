@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class WordsController {
+public class WordRestController {
 
     private final WordRepository wordRepository;
 
-    public WordsController(WordRepository wordRepository) {
+    public WordRestController(WordRepository wordRepository) {
         this.wordRepository = wordRepository;
     }
 
