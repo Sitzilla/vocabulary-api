@@ -1,0 +1,8 @@
+auth0:
+  audience: https://api.evansitzes.com/vocabulary
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://evansitzes.auth0.com/
