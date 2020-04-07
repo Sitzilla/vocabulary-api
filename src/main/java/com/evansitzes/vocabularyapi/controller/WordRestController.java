@@ -5,10 +5,10 @@ import com.evansitzes.vocabularyapi.model.repository.WordRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "words", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -21,7 +21,7 @@ public class WordRestController {
     }
 
     @GetMapping(path="")
-    public List<Word> getWords(
+    public ResponseEntity<List<Word>> getWords(
             @RequestParam(value="category", required = false) final String category,
             @RequestParam(value="language", required = false) final String language) {
 
@@ -36,11 +36,29 @@ public class WordRestController {
                                         .withIgnorePaths("id", "level", "knowledgeCount")
                                         .withIgnoreNullValues();
 
-        return wordRepository.findAll(Example.of(wordFilter, matcher));
+        return ResponseEntity.accepted().body(wordRepository.findAll(Example.of(wordFilter, matcher)));
     }
 
     @GetMapping(path="/{id}")
-    public Optional<Word> getWord(@PathVariable(value="id") final int id) {
-        return wordRepository.findById(id);
+    public ResponseEntity<Word> getWord(@PathVariable(value="id") final int id) {
+        final Word word = wordRepository.findById(id).orElse(null);
+
+        if (word == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.accepted().body(word);
+    }
+
+    @DeleteMapping(path="/{id}")
+    public ResponseEntity<Word> deleteWord(@PathVariable(value="id") final int id) {
+        final Word word = wordRepository.findById(id).orElse(null);
+
+        if (word == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        word.setActive(false);
+        return ResponseEntity.accepted().body(wordRepository.save(word));
     }
 }
