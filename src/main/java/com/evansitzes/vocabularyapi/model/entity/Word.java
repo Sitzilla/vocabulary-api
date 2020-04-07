@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Table(name = "words")
 public class Word {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
 
     private int level;

@@ -50,6 +50,13 @@ public class WordRestController {
         return ResponseEntity.accepted().body(word);
     }
 
+    @PostMapping(path = "", consumes = "application/json")
+    public ResponseEntity<Word> createWord(@RequestBody Word word) {
+
+        word.setActive(true);
+        return ResponseEntity.accepted().body(wordRepository.save(word));
+    }
+
     @DeleteMapping(path="/{id}")
     public ResponseEntity<Word> deleteWord(@PathVariable(value="id") final int id) {
         final Word word = wordRepository.findById(id).orElse(null);
